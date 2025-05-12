@@ -72,6 +72,7 @@ class GameModel:
         self.players = {}
         self.ready_players = set()
         self.current_turn = None
+        self.connections = []  # Add this line to track connections
 
     # Every one of the following methods on this trivial model simply publishes
     # an event. In a real game model, invoking methods here would update the state
