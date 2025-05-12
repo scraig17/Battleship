@@ -74,9 +74,9 @@ class GUI:
                             self.player_board.board[row][col] = result
 
                 if pending_event.get("event") == "GameOverEvent":
-                    print("[DEBUG] Game over event received")
-                    pygame.time.wait(10000)  
-                    done = True             
+                    winner = pending_event.get("winner_id")
+                    self._show_game_over_screen(winner)
+                    done = True
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -150,3 +150,23 @@ class GUI:
         except Exception as e:
             print(f"[ERROR] Failed to parse attack coords from message '{message}': {e}")
             return None
+
+    def _show_game_over_screen(self, winner_id):
+        result_text = f"Game Over!"
+        font = pygame.font.SysFont(None, 80)
+        small_font = pygame.font.SysFont(None, 40)
+
+        screen = pygame.display.get_surface()
+        screen.fill("black")
+        text = font.render(result_text, True, (255, 255, 255))
+        subtext = small_font.render("Press any key to exit", True, (200, 200, 200))
+
+        screen.blit(text, ((DISPLAY_SIZE[0] - text.get_width()) // 2, 200))
+        screen.blit(subtext, ((DISPLAY_SIZE[0] - subtext.get_width()) // 2, 300))
+        pygame.display.flip()
+
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                    waiting = False
