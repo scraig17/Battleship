@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\dwise\ECE4564\final-project-skeleton-main\final-project-skeleton-main\src\main\python\gui\__main__.py", line 113, in <module>
+    gui.run()
+    ~~~~~~~^^
+  File "C:\Users\dwise\ECE4564\final-project-skeleton-main\final-project-skeleton-main\src\main\python\gui\gui.py", line 125, in run
+    for msg in self.status_messages:
+               ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'GUI' object has no attribute 'status_messages'. Did you mean: 'status_message'?

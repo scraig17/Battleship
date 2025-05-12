@@ -1,0 +1,15 @@
+pygame 2.6.1 (SDL 2.28.4, Python 3.13.2)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Game server URL: wss://game-server.localhost.devcom.vt.edu:443/d0e010aa-0233-4daf-a10e-832d9e31572f
+Placed ship 'Destroyer' on board at (1,1)
+Placed Destroyer at (1,1)
+Placed ship 'Submarine' on board at (2,1)
+Placed Submarine at (2,1)
+Placed ship 'Cruiser' on board at (3,1)
+Placed Cruiser at (3,1)
+Placed ship 'Battleship' on board at (4,1)
+Placed Battleship at (4,1)
+Placed ship 'Carrier' on board at (5,1)
+Placed Carrier at (5,1)
+Finished placing ships and sent to server.
+[DEBUG] Game over event received

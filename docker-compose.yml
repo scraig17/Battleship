@@ -1,0 +1,72 @@
+# This configuration file for Docker Compose runs the Game API, Game Server,
+# the reverse proxy (which handles TLS and service name resolution), the
+# MongoDB database server, and a webapp that can be used to examine the contents
+# of the database.
+
+version: '3.2'
+
+services:
+
+  game-api:
+    build:
+      dockerfile: api.Dockerfile
+    environment:
+      LOCAL_IP: "0.0.0.0"
+      API_PORT: 10021
+      MONGO_URL: "mongodb://mongo:27017/game-db"
+      TOKEN_ISSUER_URI: "urn:ece4564:token-issuer"
+      PRIVATE_KEY_FILE: "/app/private_key.pem"
+      PRIVATE_KEY_PASSPHRASE: "secret"
+      GAME_SERVER_HOST: "game-server.localhost.devcom.vt.edu"
+      GAME_SERVER_WS_SCHEME: "wss"
+      GAME_SERVER_WS_PORT: 443
+    labels:
+      traefik.game-api.backend: game-api
+      traefik.game-api.port: 10021
+      traefik.game-api.frontend.rule: 'Host: game-api.localhost.devcom.vt.edu'
+
+  game-server:
+    build:
+      dockerfile: server.Dockerfile
+    environment:
+      LOCAL_IP: "0.0.0.0"
+      ENABLE_AUTH: "True"
+      WS_LISTENER_PORT: 10020
+      TOKEN_ISSUER_URI: "urn:ece4564:token-issuer"
+      PUBLIC_KEY_FILE: "/app/public_key.pem"
+    labels:
+      traefik.game-server.backend: game-server
+      traefik.game-server.port: 10020
+      traefik.game-server.frontend.rule: 'Host: game-server.localhost.devcom.vt.edu'
+
+  proxy:
+    image: code.vt.edu:5005/devcom/devcom-localhost-proxy:traefik-1.7
+    command: --api
+    ports:
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:10018:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      default:
+        aliases:
+          - game-api.localhost.devcom.vt.edu
+          - game-server.localhost.devcom.vt.edu
+          - mongo.localhost.devcom.vt.edu
+
+  mongo:
+    image: mongo
+    restart: always
+    ports: 
+      - "27017:27017"
+  mongo-express:
+    image: mongo-express
+    restart: always
+    labels:
+      traefik.mongo.backend: mongo
+      traefik.mongo.port: 8081
+      traefik.api.frontend.rule: 'Host: mongo.localhost.devcom.vt.edu'
+
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/

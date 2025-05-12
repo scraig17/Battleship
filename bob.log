@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\dwise\ECE4564\final-project-skeleton-main\final-project-skeleton-main\src\main\python\gui\__main__.py", line 113, in <module>
+    gui.run()
+    ~~~~~~~^^
+  File "C:\Users\dwise\ECE4564\final-project-skeleton-main\final-project-skeleton-main\src\main\python\gui\gui.py", line 61, in run
+    if pending_event.get("event") == "AttackEvent":
+       ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'pending_event' where it is not associated with a value
