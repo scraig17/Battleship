@@ -8,7 +8,7 @@ from threading import Lock
 
 from gamecomm.server import GameConnection
 
-from model import GameEvent
+from model import GameEvent, GameOverEvent, TurnEvent, AttackEvent, ShipSunkEvent
 
 
 logger = logging.getLogger(__name__)
@@ -59,12 +59,30 @@ class GamePublisher:
             subscriber.send(self._event_to_json(subscriber, event))
 
     def _event_to_json(self, subscriber, event: GameEvent):
-        # Here's where you could use properties of the subscriber and
-        # the event to determine exactly what to send to a given subscriber.
-        return {
+        base = {
             "event": event.__class__.__name__,
             "message": event.message,
         }
+
+        # Include additional fields depending on event type
+        if isinstance(event, GameOverEvent):
+            base["winner_id"] = event.winner_id
+        elif isinstance(event, AttackEvent):
+            base.update({
+                "attacker_id": event.attacker_id,
+                "row": event.row,
+                "col": event.col,
+                "result": event.result,
+            })
+        elif isinstance(event, ShipSunkEvent):
+            base.update({
+                "attacker_id": event.attacker_id,
+                "ship_name": event.ship_name,
+            })
+        elif isinstance(event, TurnEvent):
+            base["player_id"] = event.player_id
+
+        return base
     
     def notify(self, event: GameEvent):
         """

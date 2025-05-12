@@ -53,6 +53,7 @@ class GUI:
 
         while not done:
             for pending_event in self.event_handler.pending_events():
+                print(f"[DEBUG] Received event object: {pending_event} ({type(pending_event)})")
                 msg = str(pending_event)
                 self.status_message.append(msg)
                 if len(self.status_message) > 3:
@@ -74,7 +75,8 @@ class GUI:
                             self.player_board.board[row][col] = result
 
                 if pending_event.get("event") == "GameOverEvent":
-                    winner = pending_event.get("winner_id")
+                    winner = pending_event.get("winner_id", "Unknown")
+                    print(f"[DEBUG GUI] Extracted winner_id: {winner}")
                     self._show_game_over_screen(winner)
                     done = True
 
@@ -159,10 +161,13 @@ class GUI:
         screen = pygame.display.get_surface()
         screen.fill("black")
         text = font.render(result_text, True, (255, 255, 255))
+        winner_label = f"Winner: {winner_id}" if winner_id else "Winner: Unknown"
+        winnertext = font.render(winner_label, True, (255, 255, 255))      
         subtext = small_font.render("Press any key to exit", True, (200, 200, 200))
 
         screen.blit(text, ((DISPLAY_SIZE[0] - text.get_width()) // 2, 200))
-        screen.blit(subtext, ((DISPLAY_SIZE[0] - subtext.get_width()) // 2, 300))
+        screen.blit(winnertext, ((DISPLAY_SIZE[0] - winnertext.get_width()) // 2, 300))
+        screen.blit(subtext, ((DISPLAY_SIZE[0] - subtext.get_width()) // 2, 400))
         pygame.display.flip()
 
         waiting = True
